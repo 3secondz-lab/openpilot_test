@@ -76,7 +76,8 @@ class CarController():
     self.lkas_button_on = True
     # self.longcontrol = CP.openpilotLongitudinalControl
     self.longcontrol = True
-    self.scc_live = not CP.radarOffCan
+    # self.scc_live = not CP.radarOffCan
+    self.scc_live = False
     self.active = False
     if CP.spasEnabled:
       self.en_cnt = 0
@@ -191,8 +192,8 @@ class CarController():
         can_sends.append(create_lkas12(CS.mdps_bus))
     # if (frame % 50) == 0:
     #   can_sends.append(create_1191(CS.sas_bus))
-    # if (frame % 7) == 0:
-    #   can_sends.append(create_1156(CS.sas_bus))
+    if (frame % 7) == 0:
+      can_sends.append(create_1156(CS.sas_bus))
 
     # Send LKAS dummy to car
     can_sends.append(create_lkas11(self.packer, frame, self.car_fingerprint, apply_steer, lkas_active,

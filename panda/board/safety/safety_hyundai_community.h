@@ -8,8 +8,9 @@ int OP_EMS_live = 0;
 int HKG_mdps_bus = -1;
 const CanMsg HYUNDAI_COMMUNITY_TX_MSGS[] = {
   {832, 0, 8}, {832, 1, 8}, // LKAS11 Bus 0, 1
-  {1342, 0, 6}, {1342, 1, 6},
+  {1342, 0, 6}, {1342, 1, 6}, // LKAS12 Bus 0, 1
   {1265, 0, 4}, {1265, 1, 4}, {1265, 2, 4}, // CLU11 Bus 0, 1, 2
+  {1156, 0, 8}, // HDA11_MFC Bus 0
   {1157, 0, 4}, // LFAHDA_MFC Bus 0
   {593, 2, 8},  // MDPS12, Bus 2
   {897, 2, 8},  // MDPS11, Bus 2
@@ -266,20 +267,28 @@ static int hyundai_community_fwd_hook(int bus_num, CAN_FIFOMailBox_TypeDef *to_f
       }
     }
     if (bus_num == 2) {
-      if (!OP_LKAS_live || (addr != 832 && addr != 1157 && addr != 1342)) {
-        if (!OP_SCC_live || (addr != 1056 && addr != 1057 && addr != 1290 && addr != 905)) {
-          bus_fwd = HKG_forward_bus1 ? 10 : 0;
-        } else {
-          bus_fwd = fwd_to_bus1;  // EON create SCC12 for Car
-          OP_SCC_live -= 1;
-        }
-      } else if (HKG_mdps_bus == 0) {
-        bus_fwd = fwd_to_bus1; // EON create LKAS and LFA for Car
-        OP_LKAS_live -= 1; 
-      } else {
-        OP_LKAS_live -= 1; // EON create LKAS and LFA for Car and MDPS
+      if (!OP_SCC_live && !OP_LKAS_live) {
+        bus_fwd = 10;
+      }
+      else {
+        bus_fwd = -1;
       }
     }
+    // if (bus_num == 2) {
+    //   if (!OP_LKAS_live || (addr != 832 && addr != 1157 && addr != 1342)) {
+    //     if (!OP_SCC_live || (addr != 1056 && addr != 1057 && addr != 1290 && addr != 905)) {
+    //       bus_fwd = HKG_forward_bus1 ? 10 : 0;
+    //     } else {
+    //       bus_fwd = fwd_to_bus1;  // EON create SCC12 for Car
+    //       OP_SCC_live -= 1;
+    //     }
+    //   } else if (HKG_mdps_bus == 0) {
+    //     bus_fwd = fwd_to_bus1; // EON create LKAS and LFA for Car
+    //     OP_LKAS_live -= 1; 
+    //   } else {
+    //     OP_LKAS_live -= 1; // EON create LKAS and LFA for Car and MDPS
+    //   }
+    // }
   } else {
     if (bus_num == 0) {
       bus_fwd = fwd_to_bus1;

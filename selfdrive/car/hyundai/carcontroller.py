@@ -185,23 +185,23 @@ class CarController():
 
     can_sends = []
 
-    # if (frame % 10) == 0:
-    #     can_sends.append(create_lkas12(CS.sas_bus))
-    #     can_sends.append(create_lkas12(CS.mdps_bus))
+    if (frame % 10) == 0:
+        can_sends.append(create_lkas12(CS.sas_bus))
+        can_sends.append(create_lkas12(CS.mdps_bus))
     # if (frame % 50) == 0:
     #   can_sends.append(create_1191(CS.sas_bus))
     # if (frame % 7) == 0:
     #   can_sends.append(create_1156(CS.sas_bus))
 
     # Send LKAS dummy to car
-    # can_sends.append(create_lkas11(self.packer, frame, self.car_fingerprint, apply_steer, lkas_active,
-    #                                CS.lkas11, sys_warning, sys_state, enabled, left_lane, right_lane,
-    #                                left_lane_warning, right_lane_warning, CS.sas_bus))
+    can_sends.append(create_lkas11(self.packer, frame, self.car_fingerprint, apply_steer, lkas_active,
+                                   CS.lkas11, sys_warning, sys_state, enabled, left_lane, right_lane,
+                                   left_lane_warning, right_lane_warning, CS.sas_bus))
 
     # # Send LKAS dummy to mdps1
-    # can_sends.append(create_lkas11(self.packer, frame, self.car_fingerprint, apply_steer, lkas_active,
-    #                               CS.lkas11, sys_warning, sys_state, enabled, left_lane, right_lane,
-    #                               left_lane_warning, right_lane_warning, CS.mdps_bus))
+    can_sends.append(create_lkas11(self.packer, frame, self.car_fingerprint, apply_steer, lkas_active,
+                                  CS.lkas11, sys_warning, sys_state, enabled, left_lane, right_lane,
+                                  left_lane_warning, right_lane_warning, CS.mdps_bus))
 
     if frame % 2 and CS.mdps_bus: # send clu11 to mdps if it is not on bus 0
       can_sends.append(create_clu11(self.packer, frame, CS.clu11, Buttons.NONE, enabled_speed, CS.mdps_bus))

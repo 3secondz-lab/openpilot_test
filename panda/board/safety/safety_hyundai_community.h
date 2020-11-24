@@ -8,7 +8,7 @@ int OP_EMS_live = 0;
 int HKG_mdps_bus = -1;
 const CanMsg HYUNDAI_COMMUNITY_TX_MSGS[] = {
   {832, 0, 8}, {832, 1, 8}, // LKAS11 Bus 0, 1
-  {1342, 0, 8}, {1342, 1, 8},
+  {1342, 0, 6}, {1342, 1, 6},
   {1265, 0, 4}, {1265, 1, 4}, {1265, 2, 4}, // CLU11 Bus 0, 1, 2
   {1157, 0, 4}, // LFAHDA_MFC Bus 0
   {593, 2, 8},  // MDPS12, Bus 2
@@ -252,7 +252,7 @@ static int hyundai_community_fwd_hook(int bus_num, CAN_FIFOMailBox_TypeDef *to_f
       }
     }
     if (bus_num == 1 && HKG_forward_bus1) {
-      if (!OP_MDPS_live || (addr != 593 && addr != 897)) {
+      if (!OP_MDPS_live || (addr != 593)) {
         if (!OP_SCC_live || (addr != 1056 && addr != 1057 && addr != 1290 && addr != 905)) {
           bus_fwd = 20;
         } else {

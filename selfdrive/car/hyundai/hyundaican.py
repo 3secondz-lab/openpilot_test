@@ -138,7 +138,7 @@ def create_scc13(packer, scc13, bus):
 def create_scc14(packer, enabled, apply_accel, scc14, bus, aebcmdact, gaspressed, standstill, e_vgo):
   values = scc14
   if enabled:
-      values["SCCMode"] = 2 if gaspressed and (accel > -0.2) else 1
+      values["SCCMode"] = 2 if gaspressed and (apply_accel > -0.2) else 1
       # values["ObjGap"] = objgap
       if standstill:
         values["JerkUpperLimit"] = 0.5

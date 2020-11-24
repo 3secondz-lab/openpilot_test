@@ -141,10 +141,10 @@ def create_scc14(packer, enabled, apply_accel, scc14, bus, aebcmdact, gaspressed
       values["SCCMode"] = 2 if gaspressed and (apply_accel > -0.2) else 1
       # values["ObjGap"] = objgap
       if standstill:
-        values["JerkUpperLimit"] = 0.5
+        values["JerkUpperLimit"] = 50.
         values["JerkLowerLimit"] = 10.
-        values["ComfortBandUpper"] = 0.
-        values["ComfortBandLower"] = 0.
+        values["ComfortBandUpper"] = 10.
+        values["ComfortBandLower"] = 10.
         if e_vgo > 0.27:
           values["ComfortBandUpper"] = 2.
           values["ComfortBandLower"] = 0.

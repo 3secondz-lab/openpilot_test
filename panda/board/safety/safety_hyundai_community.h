@@ -139,6 +139,7 @@ static int hyundai_community_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
     }
 
     generic_rx_checks((addr == 832 && bus == 0));
+    controls_allowed = 1;
   }
   return valid;
 }

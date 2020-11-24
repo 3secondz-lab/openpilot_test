@@ -24,8 +24,8 @@ class CarState(CarStateBase):
     self.has_scc14 = CP.carFingerprint in FEATURES["has_scc14"]
     self.cruise_main_button = 0
     self.mdps_error_cnt = 0
-    self.spas_enabled = CP.spasEnabled
-    # self.spas_enabled = True
+    # self.spas_enabled = CP.spasEnabled
+    self.spas_enabled = True
 
   def update(self, cp, cp2, cp_cam):
     cp_mdps = cp2

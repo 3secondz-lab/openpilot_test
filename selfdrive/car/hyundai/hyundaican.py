@@ -109,8 +109,8 @@ def create_scc11(packer, frame, enabled, set_speed, lead_dist, lead_visible, scc
   values["SCCInfoDisplay"] = 0
   values["DriverAlertDisplay"] = 0
   values["TauGapSet"] = 4
-  values["Acc_ObjLatPos"] = 0
-  values["Acc_ObjRelSpd"] = 0
+  values["ACC_ObjLatPos"] = 0
+  values["ACC_ObjRelSpd"] = 0
   values["VSetDis"] = set_speed
   ## END ##
 
@@ -136,17 +136,17 @@ def create_scc12(packer, apply_accel, enabled, cnt, scc_live, scc12, bus, aebcmd
   values["CR_VSM_DecCmd"] = 0
   values["TakeOverReq"] = 0
   values["PreFill"] = 0
-  values["Cf_VSM_ConfMode"] = 1
+  values["CF_VSM_ConfMode"] = 1
   values["AEB_Failinfo"] = 0
   values["AEB_Status"] = 2
   values["AEB_StopReq"] = 0
-  
+  values["StopReq"] = 0
   ## END ##
 
   if not scc_live and enabled and not aebcmdact:
     values["ACCMode"] = 2 if gaspressed and (apply_accel > -0.2) else 1
-    if apply_accel < 0.0 and standstill:
-      values["StopReq"] = 1
+    # if apply_accel < 0.0 and standstill:
+    #   values["StopReq"] = 1
     values["aReqRaw"] = apply_accel #aReqMax
     values["aReqValue"] = apply_accel  #aReqMin
   values["CR_VSM_Alive"] = cnt

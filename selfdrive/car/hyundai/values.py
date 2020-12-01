@@ -7,9 +7,9 @@ Ecu = car.CarParams.Ecu
 # Steer torque limits
 class SteerLimitParams:
   def __init__(self, CP):
-    self.STEER_MAX = 400
-    self.STEER_DELTA_UP = 5
-    self.STEER_DELTA_DOWN = 10
+    self.STEER_MAX = 1000
+    self.STEER_DELTA_UP = 50
+    self.STEER_DELTA_DOWN = 50
     self.STEER_DRIVER_ALLOWANCE = 50
     self.STEER_DRIVER_MULTIPLIER = 2
     self.STEER_DRIVER_FACTOR = 1

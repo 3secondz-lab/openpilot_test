@@ -70,6 +70,7 @@ class CarController():
     self.steer_rate_limited = False
     self.lkas11_cnt = 0
     self.scc12_cnt = 0
+    self.aeb_cnt = 0
     self.last_resume_frame = 0
     self.last_lead_distance = 5
     self.turning_signal_timer = 0
@@ -79,6 +80,7 @@ class CarController():
     # self.scc_live = not CP.radarOffCan
     self.scc_live = False
     self.active = False
+    self.aebenabled = False
     if CP.spasEnabled:
       self.en_cnt = 0
       self.apply_steer_ang = 0.0
@@ -95,13 +97,16 @@ class CarController():
     # self.active = enabled
     # self.active = True
     # *** compute control surfaces ***
-
+    if not self.aebenabled:
+      self.aeb_cnt = 0
+    else:
+      self.aeb_cnt += 1
     # gas and brake
     apply_accel = actuators.gas - actuators.brake
 
     apply_accel, self.accel_steady = accel_hysteresis(apply_accel, self.accel_steady)
     apply_accel = clip(apply_accel * ACCEL_SCALE, ACCEL_MIN, ACCEL_MAX)
-
+    self.aebenabled = self.aebenabled or CS.out.stockAeb
     # Steering Torque
     new_steer = actuators.steer * self.p.STEER_MAX
     apply_steer = apply_std_steer_torque_limits(new_steer, self.apply_steer_last, CS.out.steeringTorque, self.p)
@@ -233,8 +238,8 @@ class CarController():
       can_sends.append(create_mdps12(self.packer, frame, CS.mdps12, CS.scc_bus))
     # ###############TEST#################
     if frame % 2 == 0: 
-      can_sends.append(create_scc11(self.packer, frame, enabled, set_speed, lead_dist, lead_visible, self.scc_live, CS.scc11, CS.sas_bus))
-      can_sends.append(create_scc12(self.packer, apply_accel, enabled, self.scc12_cnt, self.scc_live, CS.scc12, CS.sas_bus, CS.out.stockAeb, CS.out.gasPressed, CS.out.cruiseState.standstill))
+      can_sends.append(create_scc11(self.packer, frame, enabled, self.aebenabled, set_speed, lead_dist, lead_visible, self.scc_live, CS.scc11, CS.sas_bus))
+      can_sends.append(create_scc12(self.packer, apply_accel, enabled, self.scc12_cnt, self.scc_live, CS.scc12, CS.sas_bus, self.aebenabled, CS.out.gasPressed, CS.out.cruiseState.standstill))
     #   # if frame % 20 == 0:
     #   #   can_sends.append(create_scc13(self.packer, CS.scc13, CS.sas_bus))
       # if True:

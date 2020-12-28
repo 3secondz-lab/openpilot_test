@@ -133,7 +133,7 @@ def create_scc11(packer, frame, enabled, aebcmdact, set_speed, lead_dist, lead_v
 
   return packer.make_can_msg("SCC11", bus, values)
 
-def create_scc12(packer, apply_accel, enabled, cnt, scc_live, scc12, bus, aebcmdact, gaspressed, standstill):
+def create_scc12(packer, apply_accel, enabled, cnt, scc_live, scc12, bus, aebcmdact, aeb_cnt, gaspressed, standstill):
   values = scc12
 
   if not scc_live and enabled and not aebcmdact:
@@ -163,7 +163,7 @@ def create_scc12(packer, apply_accel, enabled, cnt, scc_live, scc12, bus, aebcmd
     elif aeb_cnt < 27:
       values["AccMode"] = 1
       values["AEB_CmdAct"] = 1
-      values["AEB_StopReq"] = 1
+      values["AEB_StopReq"] = 0
       values["CR_VSM_DecCmd"] = 0.2
       values["CF_VSM_Stat"] = 2
     else:

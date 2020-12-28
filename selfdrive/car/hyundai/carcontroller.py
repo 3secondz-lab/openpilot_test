@@ -92,15 +92,17 @@ class CarController():
 
     self.p = SteerLimitParams(CP)
 
-  def update(self, enabled, CS, frame, actuators, pcm_cancel_cmd, visual_alert,
+  def update(self, enabled, CS, frame, actuators, aebenabled, pcm_cancel_cmd, visual_alert,
              left_lane, right_lane, left_lane_depart, right_lane_depart, set_speed, lead_visible, lead_dist=150.0):
     # self.active = enabled
     # self.active = True
     # *** compute control surfaces ***
     if not self.aebenabled:
       self.aeb_cnt = 0
+      self.aebenabled = False
     else:
       self.aeb_cnt += 1
+      self.aebenabled = True
     # gas and brake
     apply_accel = actuators.gas - actuators.brake
 
@@ -239,7 +241,7 @@ class CarController():
     # ###############TEST#################
     if frame % 2 == 0: 
       can_sends.append(create_scc11(self.packer, frame, enabled, self.aebenabled, set_speed, lead_dist, lead_visible, self.scc_live, CS.scc11, CS.sas_bus))
-      can_sends.append(create_scc12(self.packer, apply_accel, enabled, self.scc12_cnt, self.scc_live, CS.scc12, CS.sas_bus, self.aebenabled, CS.out.gasPressed, CS.out.cruiseState.standstill))
+      can_sends.append(create_scc12(self.packer, apply_accel, enabled, self.scc12_cnt, self.scc_live, CS.scc12, CS.sas_bus, self.aebenabled, self.aeb_cnt, CS.out.gasPressed, CS.out.cruiseState.standstill))
     #   # if frame % 20 == 0:
     #   #   can_sends.append(create_scc13(self.packer, CS.scc13, CS.sas_bus))
       # if True:

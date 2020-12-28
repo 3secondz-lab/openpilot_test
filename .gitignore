@@ -33,5 +33,4 @@ rednose_repo/
 release/
 requirements.txt
 scripts/
-tools/
 update_requirements.sh

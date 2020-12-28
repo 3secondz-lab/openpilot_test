@@ -152,7 +152,7 @@ def steer_thread():
       cc_send.carControl = copy(CC)
       carcontrol.send(cc_send.to_bytes())
       # print(CS)
-
+      log_dict["frame"] = CI.frame
       log_dict["cmd_gas"] = actuators.gas
       log_dict["cmd_brake"] = actuators.brake
       log_dict["cmd_steering"] = actuators.steerAngle

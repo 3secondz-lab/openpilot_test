@@ -116,7 +116,7 @@ def create_scc11(packer, frame, enabled, aebcmdact, set_speed, lead_dist, lead_v
 
   values["AliveCounterACC"] = frame // 2 % 0x10
   if not scc_live:
-    values["MainMode_ACC"] = 1
+    values["MainMode_ACC"] = 0
     values["VSetDis"] = set_speed
 
   values["ObjValid"] = 1 if enabled else 0
@@ -124,18 +124,17 @@ def create_scc11(packer, frame, enabled, aebcmdact, set_speed, lead_dist, lead_v
   values["ACC_ObjStatus"] = lead_visible
 
   if aebcmdact:
-    values["OjbValid"] = 1
+    values["ObjValid"] = 1
     values["ACC_ObjDist"] = 20
     values["ACC_ObjStatus"] = 1
-    values["ACC_OjbLatPos"] = 0
+    values["ACC_ObjLatPos"] = 0
     values["ACC_ObjRelSpd"] = -20
-    values["DrivarAlertDisplay"] = 1
-
+    values["DriverAlertDisplay"] = 2
+  print(values)
   return packer.make_can_msg("SCC11", bus, values)
 
 def create_scc12(packer, apply_accel, enabled, cnt, scc_live, scc12, bus, aebcmdact, aeb_cnt, gaspressed, standstill):
   values = scc12
-
   if not scc_live and enabled and not aebcmdact:
     values["ACCMode"] = 2 if gaspressed and (apply_accel > -0.2) else 1
     # if apply_accel < 0.0 and standstill:
@@ -149,31 +148,35 @@ def create_scc12(packer, apply_accel, enabled, cnt, scc_live, scc12, bus, aebcmd
   values["CR_VSM_ChkSum"] = 16 - sum([sum(divmod(i, 16)) for i in dat]) % 16
 
   if aebcmdact:
+    values["AEB_Status"]=0
     values["CR_VSM_ChkSum"] = 0
-    values["CR_VSM_ALIVE"] = 0
+    values["CR_VSM_Alive"] = 0
     if aeb_cnt < 5:
-      values["AEB_StopReq"] = 1
+      values["AEB_StopReq"] = 0
       values["CF_VSM_Stat"] = 1
     elif aeb_cnt < 12:
       values["AEB_CmdAct"] = 1
-      values["CF_VSM_Stat"] = 1 
-    elif aeb_cnt < 18:
       values["AEB_StopReq"] = 1
+      values["CF_VSM_Stat"] = 1 
+      values["StopReq"] = 1
+    elif aeb_cnt < 18:
+      values["AEB_StopReq"] = 0
       values["CF_VSM_Stat"] = 1
     elif aeb_cnt < 27:
-      values["AccMode"] = 1
+      values["ACCMode"] = 1
       values["AEB_CmdAct"] = 1
-      values["AEB_StopReq"] = 0
+      values["AEB_StopReq"] = 1
       values["CR_VSM_DecCmd"] = 0.2
       values["CF_VSM_Stat"] = 2
     else:
-      values["AccMode"] = 0
+      values["ACCMode"] = 0
       values["AEB_CmdAct"] = 1
       values["StopReq"] = 1
       values["CR_VSM_DecCmd"] = 1.0
-      values["CF_VSM_ConfMode"] = 1
+      # values["CF_VSM_ConfMode"] = 1
       values["CF_VSM_Stat"] = 2
 
+  print(values)
   return packer.make_can_msg("SCC12", bus, values)
 
 def create_scc13(packer, scc13, bus):

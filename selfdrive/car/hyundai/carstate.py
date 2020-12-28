@@ -163,9 +163,12 @@ class CarState(CarStateBase):
 
     # save the entire LKAS11, CLU11, SCC12 and MDPS12
     self.lkas11 = copy.copy(cp_cam.vl["LKAS11"])
+    self.lkas12 = copy.copy(cp_cam.vl["LKAS12"])
     self.clu11 = copy.copy(cp_sas.vl["CLU11"])
     self.scc11 = copy.copy(cp_scc.vl["SCC11"])
     self.scc12 = copy.copy(cp_scc.vl["SCC12"])
+    self.scc13 = copy.copy(cp_scc.vl["SCC13"])    
+    self.mdps11 = copy.copy(cp_mdps.vl["MDPS11"])
     self.mdps12 = copy.copy(cp_mdps.vl["MDPS12"])
     self.park_brake = cp_sas.vl["CGW1"]['CF_Gway_ParkBrakeSw']
     self.steer_state = cp_mdps.vl["MDPS12"]['CF_Mdps_ToiActive'] #0 NOT ACTIVE, 1 ACTIVE

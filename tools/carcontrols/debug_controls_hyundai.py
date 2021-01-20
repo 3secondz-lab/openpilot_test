@@ -7,10 +7,11 @@ import cereal.messaging as messaging
 from selfdrive.car.car_helpers import get_car, get_one_can
 from selfdrive.boardd.boardd import can_list_to_can_capnp
 import csv
+import numpy as np
 
 HwType = log.HealthData.HwType
 
-
+freq = 0.8
 def steer_thread():
   poller = messaging.Poller()
 
@@ -93,24 +94,29 @@ def steer_thread():
         hud_alert = 0
         if joystick.testJoystick.buttons[3]:
           hud_alert = "steerRequired"
-
+          try:
+            strtime +=1
+          except Exception:
+            strtime = 0
+          actuators.steer = float(np.sin(freq*strtime/100*2*3.14))
+          actuators.steerAngle = actuators.steer*90
         if joystick.testJoystick.buttons[2]:
           aebenabled = True
         else:
           aebenabled = False
 
-      CC.actuators.gas = actuators.gas
-      CC.actuators.brake = actuators.brake
-      CC.actuators.steer = actuators.steer
-      CC.actuators.steerAngle = actuators.steerAngle
-      CC.hudControl.visualAlert = hud_alert
-      CC.hudControl.setSpeed = 26.67
-      CC.hudControl.leadVisible = True
-      CC.cruiseControl.cancel = pcm_cancel_cmd
-      CC.enabled = enabled
-      CC.hudControl.leftLaneVisible = True
-      CC.hudControl.rightLaneVisible = True
-      CC.aebenabled = aebenabled
+      # CC.actuators.gas = actuators.gas
+      # CC.actuators.brake = actuators.brake
+      # CC.actuators.steer = actuators.steer
+      # CC.actuators.steerAngle = actuators.steerAngle
+      # CC.hudControl.visualAlert = hud_alert
+      # CC.hudControl.setSpeed = 26.67
+      # CC.hudControl.leadVisible = True
+      # CC.cruiseControl.cancel = pcm_cancel_cmd
+      # CC.enabled = enabled
+      # CC.hudControl.leftLaneVisible = True
+      # CC.hudControl.rightLaneVisible = True
+      # CC.aebenabled = aebenabled
       can_sends = CI.apply(CC)
 
       ## Steering PID Controller
@@ -138,7 +144,7 @@ def steer_thread():
       # print("Destination : {:.2f},  Err : {:.4f},  p_cnt : {:.4f},  i_cnt : {:.4f},  d_cnt : {:.4f} ".format(ang_des, err, p_cnt, i_cnt, d_cnt), end='\n')
       # print(CC)
       CC.actuators.steerAngle = ang_des + p_cnt + i_cnt + d_cnt
-
+      # CC.actuators.steerAngle = ang_des
       ##
       sendcan.send(can_list_to_can_capnp(can_sends, msgtype='sendcan'))
 
@@ -156,8 +162,14 @@ def steer_thread():
       log_dict["cmd_gas"] = actuators.gas
       log_dict["cmd_brake"] = actuators.brake
       log_dict["cmd_steering"] = actuators.steerAngle
-      for msg in log_msgs:
-        log_dict.update(msg)
+      log_dict.update(CI.CS.scc11)
+      log_dict.update(CI.CS.scc12)
+      log_dict.update(CI.CS.scc13)
+      log_dict.update(CI.CS.lkas11)
+      log_dict.update(CI.CS.lkas12)
+      log_dict.update(CI.CS.mdps11) 
+      log_dict.update(CI.CS.mdps12)
+      print(log_dict)
       w.writerow(log_dict)
 if __name__ == "__main__":
   steer_thread()

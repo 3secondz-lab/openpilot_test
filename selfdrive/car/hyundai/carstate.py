@@ -161,6 +161,10 @@ class CarState(CarStateBase):
     ret.leftBlindspot = cp_sas.vl["LCA11"]["CF_Lca_IndLeft"] != 0
     ret.rightBlindspot = cp_sas.vl["LCA11"]["CF_Lca_IndRight"] != 0
 
+
+    # for aeb test
+
+    self.esp12 = copy.copy(cp_sas.vl["ESP12"])
     # save the entire LKAS11, CLU11, SCC12 and MDPS12
     self.lkas11 = copy.copy(cp_cam.vl["LKAS11"])
     self.lkas12 = copy.copy(cp_cam.vl["LKAS12"])
@@ -205,7 +209,9 @@ class CarState(CarStateBase):
       ("WHL_SPD_FR", "WHL_SPD11", 0),
       ("WHL_SPD_RL", "WHL_SPD11", 0),
       ("WHL_SPD_RR", "WHL_SPD11", 0),
-
+      ("LAT_ACCEL", "ESP12", 0),
+      ("LONG_ACCEL", "ESP12", 0),
+      ("CYL_PRES", "ESP12", 0),
       ("YAW_RATE", "ESP12", 0),
 
       ("CF_Gway_DrvSeatBeltInd", "CGW4", 1),
@@ -285,7 +291,7 @@ class CarState(CarStateBase):
       ("CR_VSM_Alive", "SCC12", 0),
       ("CR_VSM_ChkSum", "SCC12", 0),
 
-      ("Lead_Veh_Dep_Alert_USM", "SCC13", 0)
+      ("Lead_Veh_Dep_Alert_USM", "SCC13", 0),
       ("SCCDrvModeRValue", "SCC13", 3),
       ("SCC_Equip", "SCC13", 1),
       ("AebDrvSetStatus", "SCC13", 3),

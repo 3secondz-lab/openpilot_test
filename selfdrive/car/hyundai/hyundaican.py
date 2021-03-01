@@ -136,16 +136,19 @@ def create_scc11(packer, frame, enabled, aebcmdact, set_speed, lead_dist, lead_v
 
 def create_scc12(packer, apply_accel, enabled, cnt, scc_live, scc12, bus, aebcmdact, aeb_cnt, gaspressed, standstill):
   values = scc12
-  if not scc_live and enabled and not aebcmdact:
+  # if not scc_live and enabled and not aebcmdact:
+  if enabled and not aebcmdact:
     values["ACCMode"] = 2 if gaspressed and (apply_accel > -0.2) else 1
     # if apply_accel < 0.0 and standstill:
     #   values["StopReq"] = 1
     values["aReqRaw"] = apply_accel #aReqMax
     values["aReqValue"] = apply_accel  #aReqMin
+    values["TakeOverReq"] = 1
   values["CR_VSM_Alive"] = cnt
   values["CR_VSM_ChkSum"] = 0
 
-  if aebcmdact:
+  if aebcmdact and apply_accel < 0:
+    values["TakeOverReq"] = 0
     if aeb_cnt < 20:
       values["CF_VSM_PREFILL"] = 1
       values["CF_VSM_Warn"] = 1
@@ -159,7 +162,7 @@ def create_scc12(packer, apply_accel, enabled, cnt, scc_live, scc12, bus, aebcmd
       values["CF_VSM_DecCmdAct"] = 1
       values["CF_VSM_Warn"] = 3
       values["CF_VSM_BeltCmd"] = 1
-      values["CR_VSM_DecCmd"] = 0.8
+      values["CR_VSM_DecCmd"] = -apply_accel/10
 
   dat = packer.make_can_msg("SCC12", bus, values)[2]
   values["CR_VSM_ChkSum"] = 16 - sum([sum(divmod(i, 16)) for i in dat]) % 16
